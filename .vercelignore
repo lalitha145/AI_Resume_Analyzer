@@ -7,7 +7,7 @@ main.py
 database.py
 models.py
 venv/
-__pycache__/
+__pycache__/git 
 *.py
 *.pyc
 services/analyzer.py
