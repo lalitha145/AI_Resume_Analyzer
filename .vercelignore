@@ -1,0 +1,15 @@
+# Vercel builds only the frontend. Ignore backend/Python files
+# so Vercel does not run "uv pip install" (which fails and is not needed).
+requirements.txt
+runtime.txt
+render.yaml
+main.py
+database.py
+models.py
+venv/
+__pycache__/
+*.py
+*.pyc
+services/analyzer.py
+DEPLOYMENT.md
+DEPLOYMENT_EN.md
