@@ -1,51 +1,95 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Resume Insight AI
 
-# Run and deploy your AI Studio app
+**Resume Insight AI** is a full-stack web app that analyzes your PDF resume and gives you an **ATS-style score**, **keyword gap analysis**, **section-wise feedback**, and **actionable suggestions** so you can improve your resume and land more interviews.
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/drive/1HSAVgRm7efB5mStR196i66kIwpzdpJws
+## What This Project Does
+
+- **Upload a PDF resume** – Drag-and-drop or select a PDF file.
+- **Get an ATS score (0–100)** – Based on:
+  - **Keywords** (40 pts): Match against common tech keywords (Python, SQL, AWS, React, DevOps, etc.).
+  - **Sections** (40 pts): Checks for Summary, Skills, Experience, and Education.
+  - **Length & format** (20 pts): Word-count heuristic (e.g. 400–1000 words).
+- **See missing keywords** – Which tech terms are not in your resume.
+- **Section feedback** – Short tips for Summary, Skills, Experience, and Education.
+- **Suggestions** – General tips (metrics, keywords, formatting, proofreading).
+- **Optional:** When the backend is not available, the frontend can use **Azure OpenAI (GPT-4o)** for AI-based analysis (configure via env vars).
+
+**Backend** stores each analysis (filename + score) in a database (SQLite by default, or PostgreSQL if configured).
+
+---
+
+## Tech Stack
+
+| Layer    | Tech |
+|----------|------|
+| **Frontend** | React 18, TypeScript, Vite 4, Tailwind-style UI |
+| **Backend** | FastAPI (Python), Uvicorn |
+| **Database** | SQLite (default) or PostgreSQL |
+| **Resume parsing** | pdfplumber |
+| **Optional AI fallback** | Azure OpenAI (GPT-4o) via env vars |
+
+---
 
 ## Run Locally
 
-**Prerequisites:** Node.js, Python 3.x (for backend), PostgreSQL (optional, for storing analysis history)
+**Prerequisites:** Node.js (14.18+), Python 3.x
 
 ### Option A: Frontend only (Azure OpenAI fallback)
 
-1. Install dependencies: `npm install`
-2. Copy [.env.example](.env.example) to `.env.local` and set Azure OpenAI credentials:
-   - `VITE_AZURE_ENDPOINT` – Azure OpenAI endpoint (e.g. `https://your-resource.openai.azure.com/`)
-   - `VITE_AZURE_OPENAI_API_KEY` – Azure OpenAI API key
-   - `VITE_AZURE_DEPLOYMENT_NAME` – Deployment name (e.g. `gpt-4o`)
-   - `VITE_AZURE_API_VERSION` – API version (e.g. `2024-02-15-preview`)
-3. Run the app: `npm run dev`
-4. Open http://localhost:3000 and upload a PDF resume.
+1. Install dependencies:  
+   `npm install`
+2. Copy `.env.example` to `.env.local` and set Azure OpenAI credentials:
+   - `VITE_AZURE_ENDPOINT`
+   - `VITE_AZURE_OPENAI_API_KEY`
+   - `VITE_AZURE_DEPLOYMENT_NAME`
+   - `VITE_AZURE_API_VERSION`
+3. Run:  
+   `npm run dev`
+4. Open **http://localhost:3000** and upload a PDF resume.  
+   (If the backend is not running, analysis uses Azure OpenAI.)
 
 ### Option B: Full stack (Backend + Frontend)
 
-1. **Backend:** Create a virtual env, install deps, set `DATABASE_URL` in `.env`, then:
+1. **Backend**
+   - Create a virtual env, then:
    ```bash
    pip install -r requirements.txt
    python main.py
    ```
-   Backend runs at http://localhost:8000
+   - Backend runs at **http://localhost:8000**.  
+   - Optional: set `DATABASE_URL` in `.env` for PostgreSQL; otherwise SQLite is used.
 
-2. **Frontend:** Same as Option A (steps 1–4). When the backend is running, PDF analysis uses the FastAPI backend; otherwise it falls back to Azure OpenAI.
+2. **Frontend**
+   - Same as Option A (steps 1–4).  
+   - When the backend is running, PDF analysis uses the FastAPI backend; otherwise it falls back to Azure OpenAI.
 
 ---
 
-## Deploy to Render + Vercel
+## Deploy (Render + Vercel)
 
-**Step-by-step process:** [DEPLOYMENT.md](DEPLOYMENT.md) చదవండి – ప్రతి స్టెప్ వివరంగా ఉంది.
+- **Backend:** Deploy the Python/FastAPI app on **Render** (Web Service).  
+  Build: `pip install -r requirements.txt`  
+  Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+- **Frontend:** Deploy the Vite/React app on **Vercel**.  
+  Build: `npm run build` · Output: `dist`  
+  Set **`VITE_API_URL`** to your Render backend URL (e.g. `https://your-app.onrender.com`).
 
-- **Backend (Render):** Deploy the Python/FastAPI app. Use [render.yaml](render.yaml) or in Render Dashboard:
-  - **Build:** `pip install -r requirements.txt`
-  - **Start:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
-  - Optional: add a PostgreSQL database and set `DATABASE_URL` in Environment. If unset, SQLite is used (ephemeral on free tier).
-- **Frontend (Vercel):** Deploy the root folder (Vite/React). In Vercel:
-  - **Build Command:** `npm run build`
-  - **Output Directory:** `dist`
-  - **Environment:** set `VITE_API_URL` to your Render backend URL (e.g. `https://resumeinsight-api.onrender.com`). Also set `VITE_AZURE_*` if you want the Azure fallback when the backend is cold/slow.
-- **CORS:** Backend allows all origins (`*`), so the Vercel domain can call the Render API. For production you can restrict CORS to your Vercel URL in `main.py` if you prefer.
+**Step-by-step guides:**
+- [DEPLOYMENT.md](DEPLOYMENT.md) (Telugu)
+- [DEPLOYMENT_EN.md](DEPLOYMENT_EN.md) (English)
+
+---
+
+## Project Structure (summary)
+
+- **Frontend:** `App.tsx`, `index.tsx`, `components/`, `lib/api.ts`, `services/azureOpenAIService.ts`, `vite.config.ts`
+- **Backend:** `main.py`, `database.py`, `models.py`, `services/analyzer.py`, `requirements.txt`
+- **Config:** `.env.example`, `vercel.json`, `render.yaml`
+
+---
+
+## License
+
+Use this project for learning or portfolio; adjust as needed for your use case.
