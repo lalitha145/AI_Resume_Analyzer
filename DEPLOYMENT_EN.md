@@ -104,8 +104,8 @@ Your project is already on GitHub. Follow these steps to deploy the **backend on
 - **Frontend: "Backend not found" or API error**  
   In Vercel → Project → **Settings** → **Environment Variables**, set `VITE_API_URL` to your Render URL, then **Redeploy** the project.
 
-- **Render: Build failed**  
-  Check the **Logs** tab on Render. Ensure `requirements.txt` is correct and all dependencies are listed.
+- **Render: Build failed (pydantic-core / maturin / Rust)**  
+  If the build fails with "maturin" or "Read-only file system" while installing pydantic, Render is using Python 3.13 and building pydantic-core from source. The repo includes a **`runtime.txt`** that pins Python to **3.12** so Render uses pre-built wheels. Commit and push `runtime.txt`, then redeploy. In Render Dashboard → Service → **Environment**, you can also set **Python Version** to **3.12** if needed.
 
 - **Render: First request is very slow**  
   On the free tier, the service sleeps when idle. The first request may take 30–60 seconds to wake it up. If you set the Azure env vars on Vercel, the app can use Azure when the backend is cold.

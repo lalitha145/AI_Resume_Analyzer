@@ -1,5 +1,6 @@
 # Render: deploy backend (Python/FastAPI) as a Web Service
 # https://render.com/docs/deploy-fastapi
+# Use runtime.txt to pin Python 3.12 so pydantic has pre-built wheels (avoids Rust build).
 
 services:
   - type: web
