@@ -1,0 +1,5 @@
+{
+  "name": "ResumeInsight AI",
+  "description": "A clean, modern resume analyzer dashboard that provides ATS scoring, keyword suggestions, and actionable feedback using Gemini AI.",
+  "requestFramePermissions": []
+}

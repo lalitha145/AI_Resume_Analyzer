@@ -1,0 +1,14 @@
+# Render: deploy backend (Python/FastAPI) as a Web Service
+# https://render.com/docs/deploy-fastapi
+
+services:
+  - type: web
+    name: resumeinsight-api
+    runtime: python
+    region: oregon
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    # Optional: add PostgreSQL in Render Dashboard and set DATABASE_URL here.
+    # If unset, app uses SQLite (ephemeral on free tier).
