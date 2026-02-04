@@ -69,6 +69,10 @@
 
 ## Deploy (Render + Vercel)
 
+**Render పై పని చేయడానికి:** Render Dashboard → మీ Service → **Environment** → Add **PYTHON_VERSION** = **3.12.0** (అవసరం). వివరాలకు [RENDER_FIX.md](RENDER_FIX.md) చూడండి.
+
+---
+
 - **Backend:** Deploy the Python/FastAPI app on **Render** (Web Service).  
   Build: `pip install -r requirements.txt`  
   Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`

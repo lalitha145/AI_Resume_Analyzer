@@ -29,10 +29,14 @@ Your project is already on GitHub. Follow these steps to deploy the **backend on
   `uvicorn main:app --host 0.0.0.0 --port $PORT`
 - **Instance Type:** Choose **Free** if you want the free tier.
 
-### Step 5: Environment Variables (Optional)
-- In the **Environment** section:
-  - To use **PostgreSQL:** Create a PostgreSQL database in Render, then add **DATABASE_URL** here (copy from the database’s connection string).
-  - If you skip this: The app will use SQLite (on the free tier, data may be lost when the service restarts).
+### Step 5: Environment Variables (Required for Render to work)
+- In the **Environment** section, add this **first** (required):
+  - **Key:** `PYTHON_VERSION`
+  - **Value:** `3.12.0`  
+  (Render uses Python 3.13 by default; this project needs 3.12 for pydantic/SQLAlchemy/psycopg2.)
+- Optional:
+  - To use **PostgreSQL:** Create a PostgreSQL database in Render, then add **DATABASE_URL** (copy from the database’s connection string).
+  - If you skip DATABASE_URL: The app uses SQLite (on the free tier, data may be lost when the service restarts).
 
 ### Step 6: Deploy
 - Click **"Create Web Service"**.
@@ -104,8 +108,8 @@ Your project is already on GitHub. Follow these steps to deploy the **backend on
 - **Frontend: "Backend not found" or API error**  
   In Vercel → Project → **Settings** → **Environment Variables**, set `VITE_API_URL` to your Render URL, then **Redeploy** the project.
 
-- **Render: Build failed (pydantic-core / maturin / Rust)**  
-  If the build fails with "maturin" or "Read-only file system" while installing pydantic, Render is using Python 3.13 and building pydantic-core from source. The repo includes a **`runtime.txt`** that pins Python to **3.12** so Render uses pre-built wheels. Commit and push `runtime.txt`, then redeploy. In Render Dashboard → Service → **Environment**, you can also set **Python Version** to **3.12** if needed.
+- **Render: Build or runtime failed (pydantic, SQLAlchemy, psycopg2)**  
+  Set **PYTHON_VERSION** = **3.12.0** in Render: Dashboard → your Web Service → **Environment** → Add variable → Key: `PYTHON_VERSION`, Value: `3.12.0` → Save → **Redeploy**. This project is tested on Python 3.12; Render’s default (3.13) can cause build or import errors.
 
 - **Render: First request is very slow**  
   On the free tier, the service sleeps when idle. The first request may take 30–60 seconds to wake it up. If you set the Azure env vars on Vercel, the app can use Azure when the backend is cold.
