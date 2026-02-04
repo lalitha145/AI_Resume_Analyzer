@@ -6,8 +6,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Default to SQLite (no DB setup needed). Set DATABASE_URL for PostgreSQL (use Python 3.12 on Render).
+# Default to SQLite. Set DATABASE_URL for PostgreSQL (psycopg3 used on Python 3.13).
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./resume.db")
+if DATABASE_URL.startswith("postgresql://") and "+" not in DATABASE_URL.split("?")[0]:
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
 
 # SQLite needs check_same_thread=False for FastAPI
 engine = create_engine(
